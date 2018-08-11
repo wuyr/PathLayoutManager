@@ -14,17 +14,17 @@ import android.view.View;
 /**
  * Created by wuyr on 18-5-22 下午10:32.
  */
-public class MyView extends View {
+public class CanvasView extends View {
 
-    public MyView(Context context) {
+    public CanvasView(Context context) {
         super(context);
     }
 
-    public MyView(Context context, @Nullable AttributeSet attrs) {
+    public CanvasView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MyView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public CanvasView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

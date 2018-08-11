@@ -19,7 +19,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private PathLayoutManager mPathLayoutManager;
-    private MyView mView, mCanvasView;
+    private CanvasView mView, mCanvasView;
     private MyAdapter mAdapter;
 
     @Override

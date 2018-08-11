@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.wuyr.pathlayoutmanagertest.MyView
+    <com.wuyr.pathlayoutmanagertest.CanvasView
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.wuyr.pathlayoutmanagertest.MyView
+    <com.wuyr.pathlayoutmanagertest.CanvasView
         android:id="@+id/canvas_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
