@@ -8,7 +8,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by wuyr on 18-5-20 上午4:09.
@@ -32,7 +31,7 @@ public class MyAdapter extends BaseAdapter<String, MyAdapter.ViewHolder> {
 //        } else {
 //            holder.imageView.setImageResource(new Random().nextBoolean() ? R.drawable.ic_dragon_body_1 : R.drawable.ic_dragon_body_2);
 //        }
-        holder.imageView.setImageResource(new Random().nextBoolean() ? R.drawable.ic_j20_ : R.drawable.ic_j20);
+        holder.imageView.setImageResource(R.drawable.ic_j20);
         holder.rootView.setOnClickListener(v -> {
             toast.setText("点击了： " + holder.textView.getText().toString());
             toast.show();

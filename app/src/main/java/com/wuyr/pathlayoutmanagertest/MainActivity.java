@@ -3,8 +3,10 @@ package com.wuyr.pathlayoutmanagertest;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
@@ -18,6 +20,7 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private BottomSheetDialog mMenuDialog;
     private PathLayoutManager mPathLayoutManager;
     private CanvasView mView, mCanvasView;
     private MyAdapter mAdapter;
@@ -31,17 +34,26 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.act_main_view);
 
-        initView();
+        initMenuDialog();
+//        initView();
+    }
+
+    private void initMenuDialog() {
+        View menuView = LayoutInflater.from(this).inflate(R.layout.layout_menu, null, false);
+
+
+        mMenuDialog = new BottomSheetDialog(this);
+        mMenuDialog.setContentView(menuView);
     }
 
     private void initView() {
-        mView = findViewById(R.id.view);
+        mView = findViewById(R.id.track_panel);
         mCanvasView = findViewById(R.id.canvas_view);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(mPathLayoutManager = new PathLayoutManager(null, 50));
         recyclerView.setAdapter(mAdapter = new MyAdapter(this, null));
 
-        SeekBar seekBar = findViewById(R.id.seek_bar);
+        SeekBar seekBar = findViewById(R.id.item_offset);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -55,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+
 
             }
         });
@@ -88,6 +101,10 @@ public class MainActivity extends AppCompatActivity {
         itemDirectionFixed.setOnCheckedChangeListener(listener);
         unlimitedScroll.setOnCheckedChangeListener(listener);
         allowOverflow.setOnCheckedChangeListener(listener);
+
+    }
+
+    public void handleOnClick(View view) {
 
     }
 
@@ -128,6 +145,12 @@ public class MainActivity extends AppCompatActivity {
     public void removeItem(View view) {
         for (int i = 0; i < 10; i++) {
             mAdapter.removeData(mAdapter.getItemCount() - 1);
+        }
+    }
+
+    public void showMenu(View view) {
+        if (!mMenuDialog.isShowing()) {
+            mMenuDialog.show();
         }
     }
 }

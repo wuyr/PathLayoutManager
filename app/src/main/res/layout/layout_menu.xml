@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="start"
+    android:background="@android:color/white"
+    android:padding="4dp">
+
+    <Button
+        android:id="@+id/start_draw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="handleOnClick"
+        android:text="start draw" />
+
+    <Button
+        android:id="@+id/end_draw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="handleOnClick"
+        android:text="stop draw"
+        app:layout_constraintStart_toEndOf="@id/start_draw" />
+
+    <Button
+        android:id="@+id/add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="handleOnClick"
+        android:text="add"
+        app:layout_constraintTop_toBottomOf="@+id/start_draw" />
+
+    <Button
+        android:id="@+id/remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="handleOnClick"
+        android:text="remove"
+        app:layout_constraintStart_toEndOf="@id/add"
+        app:layout_constraintTop_toBottomOf="@+id/start_draw" />
+
+    <TextView
+        android:id="@+id/vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="vertical scroll"
+        app:layout_constraintTop_toBottomOf="@+id/add" />
+
+    <Switch
+        android:id="@+id/orientation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/item_offset"
+        app:layout_constraintStart_toEndOf="@id/vertical"
+        app:layout_constraintTop_toBottomOf="@+id/add" />
+
+    <TextView
+        android:id="@+id/horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="horizontal scroll"
+        app:layout_constraintBaseline_creator="@id/orientation"
+        app:layout_constraintHeight_max="@dimen/cardview_compat_inset_shadow"
+        app:layout_constraintStart_toEndOf="@id/orientation"
+        app:layout_constraintTop_toBottomOf="@+id/add" />
+
+    <TextView
+        android:id="@+id/unlimited_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="unlimited scroll"
+        app:layout_constraintTop_toBottomOf="@+id/orientation" />
+
+    <Switch
+        android:id="@+id/scroll_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/item_offset"
+        app:layout_constraintStart_toEndOf="@id/unlimited_scroll"
+        app:layout_constraintTop_toBottomOf="@+id/orientation" />
+
+    <TextView
+        android:id="@+id/allow_overflow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="allow overflow"
+        app:layout_constraintStart_toEndOf="@id/scroll_mode"
+        app:layout_constraintTop_toBottomOf="@+id/orientation" />
+
+    <TextView
+        android:id="@+id/direction_fixed_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="direction fixed"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
+
+    <Switch
+        android:id="@+id/direction_fixed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/item_offset"
+        android:padding="4dp"
+        app:layout_constraintStart_toEndOf="@id/direction_fixed_text"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
+
+    <TextView
+        android:id="@+id/auto_select_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="auto select"
+        app:layout_constraintTop_toBottomOf="@+id/direction_fixed" />
+
+    <Switch
+        android:id="@+id/auto_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/item_offset"
+        android:padding="4dp"
+        app:layout_constraintStart_toEndOf="@id/auto_select_text"
+        app:layout_constraintTop_toBottomOf="@+id/direction_fixed" />
+
+    <TextView
+        android:id="@+id/item_offset_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="item offset"
+        app:layout_constraintEnd_toStartOf="@id/item_offset"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/auto_select" />
+
+    <SeekBar
+        android:id="@+id/item_offset"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:max="1080"
+        android:padding="4dp"
+        android:progress="50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/item_offset_text"
+        app:layout_constraintTop_toBottomOf="@+id/auto_select" />
+
+    <TextView
+        android:id="@+id/auto_select_fraction_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="auto select fraction"
+        app:layout_constraintEnd_toStartOf="@id/auto_select_fraction"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_offset" />
+
+    <SeekBar
+        android:id="@+id/auto_select_fraction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:max="100"
+        android:padding="4dp"
+        android:progress="50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/auto_select_fraction_text"
+        app:layout_constraintTop_toBottomOf="@+id/item_offset" />
+
+    <EditText
+        android:id="@+id/scale_ratio_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:hint="example: 1,1,1,1"
+        android:inputType="numberDecimal"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@+id/auto_select_fraction" />
+
+    <Button
+        android:id="@+id/apply_scale_ratio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="apply scale ratios"
+        app:layout_constraintTop_toBottomOf="@+id/scale_ratio_text" />
+
+</android.support.constraint.ConstraintLayout>

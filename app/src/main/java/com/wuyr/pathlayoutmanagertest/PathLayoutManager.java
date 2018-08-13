@@ -23,9 +23,8 @@ import java.util.List;
  */
 public class PathLayoutManager extends RecyclerView.LayoutManager implements RecyclerView.SmoothScroller.ScrollVectorProvider {
 
-    @RecyclerView.Orientation
-    private int mOrientation;
     private Keyframes mKeyframes;
+    private int mOrientation;
     private int mItemOffset;
     private int mItemCountInScreen;
     private int mFirstVisibleItemPos;
@@ -37,12 +36,14 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     private float[] mScaleRatio;
     private float mAutoSelectFraction;
     private long mFixingAnimationDuration;
-    private MyItemAnimator mItemAnimator;
+    private boolean isAnimatorInitialized;
+    private int mCacheCount;
+
+    //RecyclerView default ItemAnimator has bug on PathLayoutManager
+    private RepairedItemAnimator mItemAnimator;
     private RecyclerView.Recycler mRecycler;
     private RecyclerView.State mState;
     private ValueAnimator mAnimator;
-    private boolean isAnimatorInitialized;
-    private int mCacheCount;
 
     public PathLayoutManager(Path path, int itemOffset) {
         this(path, itemOffset, RecyclerView.VERTICAL);
@@ -55,8 +56,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         mOrientation = orientation;
         mItemOffset = itemOffset;
         updatePath(path);
-        mItemAnimator = new MyItemAnimator();
+        mItemAnimator = new RepairedItemAnimator();
         mItemAnimator.setOnErrorListener(holder -> {
+            LogUtil.print("error!!!");
             if (mRecycler != null && mState != null) {
                 removeAndRecycleAllViews(mRecycler);
                 for (int i = 0; i < mState.getItemCount(); i++) {
@@ -489,45 +491,6 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         return mOrientation == RecyclerView.HORIZONTAL;
     }
 
-    @Override
-    public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount) {
-        delayNotifyDataSetChanged(recyclerView);
-    }
-
-    @Override
-    public void onItemsRemoved(RecyclerView recyclerView, int positionStart, int itemCount) {
-        delayNotifyDataSetChanged(recyclerView);
-    }
-
-    @Override
-    public void onItemsUpdated(RecyclerView recyclerView, int positionStart, int itemCount) {
-        delayNotifyDataSetChanged(recyclerView);
-    }
-
-    @Override
-    public void onItemsUpdated(RecyclerView recyclerView, int positionStart, int itemCount, Object payload) {
-        delayNotifyDataSetChanged(recyclerView);
-    }
-
-    @Override
-    public void onItemsMoved(RecyclerView recyclerView, int from, int to, int itemCount) {
-        delayNotifyDataSetChanged(recyclerView);
-    }
-
-    private volatile boolean isPosting;
-
-    private void delayNotifyDataSetChanged(RecyclerView recyclerView) {
-        if (recyclerView.isComputingLayout()) {
-            isPosting = true;
-            recyclerView.postDelayed(() -> delayNotifyDataSetChanged(recyclerView), 5);
-        } else {
-            if (isPosting) {
-                isPosting = false;
-                recyclerView.getAdapter().notifyDataSetChanged();
-            }
-        }
-    }
-
     public void updatePath(Path path) {
         if (path != null) {
             mKeyframes = new Keyframes(path);
@@ -810,5 +773,44 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     @Override
     public PointF computeScrollVectorForPosition(int targetPosition) {
         return null;
+    }
+
+    @Override
+    public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount) {
+        delayNotifyDataSetChanged(recyclerView);
+    }
+
+    @Override
+    public void onItemsRemoved(RecyclerView recyclerView, int positionStart, int itemCount) {
+        delayNotifyDataSetChanged(recyclerView);
+    }
+
+    @Override
+    public void onItemsUpdated(RecyclerView recyclerView, int positionStart, int itemCount) {
+        delayNotifyDataSetChanged(recyclerView);
+    }
+
+    @Override
+    public void onItemsUpdated(RecyclerView recyclerView, int positionStart, int itemCount, Object payload) {
+        delayNotifyDataSetChanged(recyclerView);
+    }
+
+    @Override
+    public void onItemsMoved(RecyclerView recyclerView, int from, int to, int itemCount) {
+        delayNotifyDataSetChanged(recyclerView);
+    }
+
+    private volatile boolean isPosting;
+
+    private void delayNotifyDataSetChanged(RecyclerView recyclerView) {
+        if (recyclerView.isComputingLayout()) {
+            isPosting = true;
+            recyclerView.postDelayed(() -> delayNotifyDataSetChanged(recyclerView), 5);
+        } else {
+            if (isPosting) {
+                isPosting = false;
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+        }
     }
 }

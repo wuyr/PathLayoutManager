@@ -20,8 +20,10 @@ import java.util.List;
  * a RecyclerView. RecyclerView uses a DefaultItemAnimator by default.
  *
  * @see RecyclerView#setItemAnimator(RecyclerView.ItemAnimator)
+ *
+ * RecyclerView default ItemAnimator has bug on PathLayoutManager
  */
-public class MyItemAnimator extends SimpleItemAnimator {
+public class RepairedItemAnimator extends SimpleItemAnimator {
     private static final boolean DEBUG = false;
 
     private static TimeInterpolator sDefaultInterpolator;
