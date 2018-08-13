@@ -1,2 +1,2 @@
 # PathLayoutManager
-自定义RecyclerView的LayoutManager，让你的Item跟着Path走
+## 详细README敬请期待！
