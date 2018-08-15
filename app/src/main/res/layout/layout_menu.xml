@@ -40,12 +40,82 @@
         app:layout_constraintTop_toBottomOf="@+id/start_draw" />
 
     <TextView
+        android:id="@+id/item_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="item type"
+        app:layout_constraintTop_toBottomOf="@+id/add" />
+
+    <Button
+        android:id="@+id/card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="handleOnClick"
+        android:text="card"
+        app:layout_constraintTop_toBottomOf="@+id/item_type" />
+
+    <Button
+        android:id="@+id/j20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/item_offset"
+        android:onClick="handleOnClick"
+        android:text="j20"
+        app:layout_constraintStart_toEndOf="@id/card"
+        app:layout_constraintTop_toBottomOf="@+id/item_type" />
+
+    <Button
+        android:id="@+id/dragon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="handleOnClick"
+        android:text="dragon"
+        app:layout_constraintStart_toEndOf="@id/j20"
+        app:layout_constraintTop_toBottomOf="@+id/item_type" />
+
+    <TextView
+        android:id="@+id/scroll_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="scroll mode"
+        app:layout_constraintTop_toBottomOf="@+id/card" />
+
+    <Button
+        android:id="@+id/normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="handleOnClick"
+        android:text="normal"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
+
+    <Button
+        android:id="@+id/overflow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/item_offset"
+        android:onClick="handleOnClick"
+        android:text="overflow"
+        app:layout_constraintStart_toEndOf="@id/normal"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
+
+    <Button
+        android:id="@+id/loop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="handleOnClick"
+        android:text="loop"
+        app:layout_constraintStart_toEndOf="@id/overflow"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
+
+    <TextView
         android:id="@+id/vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="vertical scroll"
-        app:layout_constraintTop_toBottomOf="@+id/add" />
+        app:layout_constraintTop_toBottomOf="@+id/normal" />
 
     <Switch
         android:id="@+id/orientation"
@@ -53,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/item_offset"
         app:layout_constraintStart_toEndOf="@id/vertical"
-        app:layout_constraintTop_toBottomOf="@+id/add" />
+        app:layout_constraintTop_toBottomOf="@+id/normal" />
 
     <TextView
         android:id="@+id/horizontal"
@@ -61,35 +131,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="horizontal scroll"
-        app:layout_constraintBaseline_creator="@id/orientation"
-        app:layout_constraintHeight_max="@dimen/cardview_compat_inset_shadow"
         app:layout_constraintStart_toEndOf="@id/orientation"
-        app:layout_constraintTop_toBottomOf="@+id/add" />
-
-    <TextView
-        android:id="@+id/unlimited_scroll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="unlimited scroll"
-        app:layout_constraintTop_toBottomOf="@+id/orientation" />
-
-    <Switch
-        android:id="@+id/scroll_mode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/item_offset"
-        app:layout_constraintStart_toEndOf="@id/unlimited_scroll"
-        app:layout_constraintTop_toBottomOf="@+id/orientation" />
-
-    <TextView
-        android:id="@+id/allow_overflow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="allow overflow"
-        app:layout_constraintStart_toEndOf="@id/scroll_mode"
-        app:layout_constraintTop_toBottomOf="@+id/orientation" />
+        app:layout_constraintTop_toBottomOf="@+id/normal" />
 
     <TextView
         android:id="@+id/direction_fixed_text"
@@ -97,7 +140,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="direction fixed"
-        app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
+        app:layout_constraintTop_toBottomOf="@+id/orientation" />
 
     <Switch
         android:id="@+id/direction_fixed"
@@ -106,7 +149,7 @@
         android:layout_above="@+id/item_offset"
         android:padding="4dp"
         app:layout_constraintStart_toEndOf="@id/direction_fixed_text"
-        app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
+        app:layout_constraintTop_toBottomOf="@+id/orientation" />
 
     <TextView
         android:id="@+id/auto_select_text"
@@ -176,8 +219,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:hint="example: 1,1,1,1"
-        android:inputType="numberDecimal"
+        android:hint="scale ratios (example: 0,0.5)"
         android:maxLines="1"
         android:singleLine="true"
         android:textSize="15sp"
@@ -186,6 +228,7 @@
     <Button
         android:id="@+id/apply_scale_ratio"
         android:layout_width="match_parent"
+        android:onClick="handleOnClick"
         android:layout_height="wrap_content"
         android:text="apply scale ratios"
         app:layout_constraintTop_toBottomOf="@+id/scale_ratio_text" />

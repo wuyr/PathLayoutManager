@@ -12,11 +12,11 @@ import java.util.List;
 /**
  * Created by wuyr on 18-5-20 上午4:09.
  */
-public class MyAdapter extends BaseAdapter<String, MyAdapter.ViewHolder> {
+public class PathAdapter extends BaseAdapter<String, PathAdapter.ViewHolder> {
 
     private Toast toast;
 
-    public MyAdapter(Context context, List<String> data) {
+    public PathAdapter(Context context, List<String> data) {
         super(context, data, R.layout.adapter_item_view, ViewHolder.class);
         toast = Toast.makeText(context, "", Toast.LENGTH_SHORT);
     }

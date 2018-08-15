@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.support.annotation.FloatRange;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
 import com.wuyr.pathlayoutmanagertest.keyframes.Keyframes;
 import com.wuyr.pathlayoutmanagertest.keyframes.PosTan;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +26,23 @@ import java.util.List;
  */
 public class PathLayoutManager extends RecyclerView.LayoutManager implements RecyclerView.SmoothScroller.ScrollVectorProvider {
 
+    @IntDef({SCROLL_MODE_NORMAL, SCROLL_MODE_OVERFLOW, SCROLL_MODE_LOOP})
+    @Retention(RetentionPolicy.SOURCE)
+    private @interface ScrollMode {
+    }
+
+    public static final int SCROLL_MODE_NORMAL = 0;
+    public static final int SCROLL_MODE_OVERFLOW = 1;
+    public static final int SCROLL_MODE_LOOP = 2;
+
     private Keyframes mKeyframes;
+    private int mScrollMode;
     private int mOrientation;
     private int mItemOffset;
     private int mItemCountInScreen;
     private int mFirstVisibleItemPos;
     private float mOffsetX, mOffsetY;
     private boolean isItemDirectionFixed;
-    private boolean isAllowOverflow;
-    private boolean isUnlimitedScroll;
     private boolean isAutoSelect;
     private float[] mScaleRatio;
     private float mAutoSelectFraction;
@@ -196,15 +207,15 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         //item个数
         int itemCount = getItemCount();
         //满足无限滚动
-        if (isSatisfiedUnlimitedScroll()) {
-            initNeedLayoutUnlimitedScrollItems(result, itemCount);
+        if (isSatisfiedLoopScroll()) {
+            initNeedLayoutLoopScrollItems(result, itemCount);
         } else {
             initNeedLayoutItems(result, itemCount);
         }
         return result;
     }
 
-    private void initNeedLayoutUnlimitedScrollItems(List<PosTan> result, int itemCount) {
+    private void initNeedLayoutLoopScrollItems(List<PosTan> result, int itemCount) {
         int overflowCount = getOverflowCount();
         //得出第一个可见的item
         mFirstVisibleItemPos = overflowCount - mItemCountInScreen - 1;
@@ -309,7 +320,7 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         forwardStartIndex = forwardEndIndex - mCacheCount;
         backwardEndIndex = backwardStartIndex + mCacheCount;
 
-        if (isSatisfiedUnlimitedScroll()) {
+        if (isSatisfiedLoopScroll()) {
             if (itemCount > mCacheCount + mItemCountInScreen) {
                 //因为是循环滚动(没有边界)所以总是需要回收
                 needRecyclerForward = true;
@@ -349,7 +360,7 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     private void recycleChildren(RecyclerView.Recycler recycler, RecyclerView.State state, int startIndex, int endIndex) {
         int temp;
         for (int i = startIndex; i <= endIndex; i++) {
-            temp = isSatisfiedUnlimitedScroll() ? fixOverflowIndex(i, getItemCount()) : i;
+            temp = isSatisfiedLoopScroll() ? fixOverflowIndex(i, getItemCount()) : i;
             if (temp >= state.getItemCount()) {
                 break;
             }
@@ -394,7 +405,7 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         mOffsetY += offsetY;
         int pathLength = mKeyframes.getPathLength();
         int itemLength = getItemLength();
-        if ((isSatisfiedUnlimitedScroll(pathLength, itemLength))) {
+        if ((isSatisfiedLoopScroll(pathLength, itemLength))) {
             if (mOffsetY > itemLength) {
                 mOffsetY %= itemLength;
                 //因为是向前偏移了一个Item的距离
@@ -404,7 +415,7 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
                 mOffsetY += mItemOffset;
             }
         } else {
-            if (isAllowOverflow) {
+            if (isOverflowMode()) {
                 if (mOffsetY < -pathLength) {
                     mOffsetY = -pathLength;
                 } else if (mOffsetY > itemLength) {
@@ -429,7 +440,7 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         mOffsetX += offsetX;
         int pathLength = mKeyframes.getPathLength();
         int itemLength = getItemLength();
-        if (isSatisfiedUnlimitedScroll(pathLength, itemLength)) {
+        if (isSatisfiedLoopScroll(pathLength, itemLength)) {
             if (mOffsetX > itemLength) {
                 mOffsetX %= itemLength;
                 //因为是向前偏移了一个Item的距离
@@ -439,7 +450,7 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
                 mOffsetX += mItemOffset;
             }
         } else {
-            if (isAllowOverflow) {
+            if (isOverflowMode()) {
                 if (mOffsetX < -pathLength) {
                     mOffsetX = -pathLength;
                 } else if (mOffsetX > itemLength) {
@@ -460,15 +471,23 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
-    private boolean isSatisfiedUnlimitedScroll() {
+    private boolean isSatisfiedLoopScroll() {
         checkKeyframes();
         int pathLength = mKeyframes.getPathLength();
         int itemLength = getItemLength();
-        return isUnlimitedScroll && itemLength - pathLength > mItemOffset;
+        return isLoopScrollMode() && itemLength - pathLength > mItemOffset;
     }
 
-    private boolean isSatisfiedUnlimitedScroll(int pathLength, int itemLength) {
-        return isUnlimitedScroll && itemLength - pathLength > mItemOffset;
+    private boolean isSatisfiedLoopScroll(int pathLength, int itemLength) {
+        return isLoopScrollMode() && itemLength - pathLength > mItemOffset;
+    }
+
+    private boolean isLoopScrollMode() {
+        return mScrollMode == SCROLL_MODE_LOOP;
+    }
+
+    private boolean isOverflowMode() {
+        return mScrollMode == SCROLL_MODE_OVERFLOW;
     }
 
     private int getItemLength() {
@@ -526,13 +545,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
-    public void setAllowOverflow(boolean isAllow) {
-        isAllowOverflow = isAllow;
-    }
-
-    public void setUnlimitedScroll(boolean isUnlimited) {
-        if (isUnlimited != isUnlimitedScroll) {
-            isUnlimitedScroll = isUnlimited;
+    public void setScrollMode(@ScrollMode int mode) {
+        if (mode != mScrollMode) {
+            mScrollMode = mode;
             requestLayout();
         }
     }
@@ -598,7 +613,7 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
                 count++;
             } while (fixOverflowIndex(closestPosition + count, itemCount) != position);
             //如果设置了无限滚动的话，判断哪一边更接近来决定是向前滚动还是向后滚动
-            if (isSatisfiedUnlimitedScroll() &&
+            if (isSatisfiedLoopScroll() &&
                     count < Math.abs(closestPosition - position)) {
                 position = closestPosition + count;
             }
@@ -704,6 +719,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     }
 
     public void setItemScaleRatio(float... ratios) {
+        if (ratios.length == 0) {
+            ratios = new float[]{1, 1};
+        }
         if (mScaleRatio != ratios) {
             if (ratios.length < 2 || ratios.length % 2 != 0) {
                 throw new IllegalArgumentException("Array length no match!");
@@ -757,6 +775,7 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
             mKeyframes.release();
             mKeyframes = null;
         }
+        mScaleRatio = null;
         mItemAnimator = null;
         mRecycler = null;
         mState = null;
