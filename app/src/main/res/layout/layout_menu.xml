@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_gravity="start"
     android:background="@android:color/white"
+    android:clickable="true"
+    android:focusable="true"
     android:padding="4dp">
 
     <Button
@@ -228,8 +230,8 @@
     <Button
         android:id="@+id/apply_scale_ratio"
         android:layout_width="match_parent"
-        android:onClick="handleOnClick"
         android:layout_height="wrap_content"
+        android:onClick="handleOnClick"
         android:text="apply scale ratios"
         app:layout_constraintTop_toBottomOf="@+id/scale_ratio_text" />
 

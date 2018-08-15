@@ -706,7 +706,10 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     }
 
     public void setAutoSelectFraction(@FloatRange(from = 0F, to = 1F) float position) {
-        mAutoSelectFraction = position;
+        if (mAutoSelectFraction != position) {
+            mAutoSelectFraction = position;
+            requestLayout();
+        }
     }
 
     public void setAutoSelect(boolean isAutoSelect) {
@@ -721,6 +724,11 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     public void setItemScaleRatio(float... ratios) {
         if (ratios.length == 0) {
             ratios = new float[]{1, 1};
+        }
+        for (float tmp : ratios) {
+            if (tmp < 0) {
+                throw new IllegalArgumentException("Array value can not be negative!");
+            }
         }
         if (mScaleRatio != ratios) {
             if (ratios.length < 2 || ratios.length % 2 != 0) {
