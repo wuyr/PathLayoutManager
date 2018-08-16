@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private CanvasView mTrackView, mCanvasView;
     private PathAdapter mAdapter;
     private Toast mToast;
+    private boolean isShowPath;
 
     @SuppressLint("ShowToast")
     @Override
@@ -59,9 +60,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         findViewById(R.id.card).setEnabled(false);
         findViewById(R.id.normal).setEnabled(false);
 
-        ((Switch)findViewById( R.id.orientation)).setOnCheckedChangeListener(this);
-        ((Switch)findViewById( R.id.direction_fixed)).setOnCheckedChangeListener(this);
-        ((Switch)findViewById( R.id.auto_select)).setOnCheckedChangeListener(this);
+        ((Switch) findViewById(R.id.orientation)).setOnCheckedChangeListener(this);
+        ((Switch) findViewById(R.id.direction_fixed)).setOnCheckedChangeListener(this);
+        ((Switch) findViewById(R.id.auto_select)).setOnCheckedChangeListener(this);
 
         ((SeekBar) findViewById(R.id.item_offset)).setOnSeekBarChangeListener(this);
         ((SeekBar) findViewById(R.id.auto_select_fraction)).setOnSeekBarChangeListener(this);
@@ -80,7 +81,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 if (path != null && !path.isEmpty()) {
                     mCanvasView.setVisibility(View.INVISIBLE);
                     mTrackView.setPath(mCanvasView.getPath());
-//                    mTrackView.setVisibility(View.VISIBLE);
+                    if (isShowPath) {
+                        mTrackView.setVisibility(View.VISIBLE);
+                    }
+
                     mPathLayoutManager.updatePath(mCanvasView.getPath());
                 }
                 break;
@@ -101,17 +105,19 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 view.setEnabled(false);
                 findViewById(R.id.j20).setEnabled(true);
                 findViewById(R.id.dragon).setEnabled(true);
-
+                mAdapter.setType(PathAdapter.TYPE_CARD);
                 break;
             case R.id.j20:
                 view.setEnabled(false);
                 findViewById(R.id.card).setEnabled(true);
                 findViewById(R.id.dragon).setEnabled(true);
+                mAdapter.setType(PathAdapter.TYPE_J20);
                 break;
             case R.id.dragon:
                 view.setEnabled(false);
                 findViewById(R.id.card).setEnabled(true);
                 findViewById(R.id.j20).setEnabled(true);
+                mAdapter.setType(PathAdapter.TYPE_DRAGON);
                 break;
 
             case R.id.normal:
@@ -168,6 +174,19 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.auto_select:
                 mPathLayoutManager.setAutoSelect(isChecked);
                 break;
+            case R.id.disable_fling:
+                mPathLayoutManager.setFlingEnable(!isChecked);
+                break;
+            case R.id.show_path:
+                isShowPath = isChecked;
+                if (isChecked) {
+                    if (mCanvasView.getVisibility() == View.INVISIBLE) {
+                        mTrackView.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    mTrackView.setVisibility(View.INVISIBLE);
+                }
+                break;
             default:
                 break;
         }
@@ -175,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        mToast.cancel();
         switch (seekBar.getId()) {
             case R.id.item_offset:
                 mPathLayoutManager.setItemOffset(progress);

@@ -49,6 +49,8 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     private long mFixingAnimationDuration;
     private boolean isAnimatorInitialized;
     private int mCacheCount;
+    private boolean isFlingEnable;
+    private boolean isFlinging;
 
     //RecyclerView default ItemAnimator has bug on PathLayoutManager
     private RepairedItemAnimator mItemAnimator;
@@ -66,6 +68,7 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         mFixingAnimationDuration = 250;
         mOrientation = orientation;
         mItemOffset = itemOffset;
+        isFlingEnable = true;
         updatePath(path);
         mItemAnimator = new RepairedItemAnimator();
         mItemAnimator.setOnErrorListener(holder -> {
@@ -402,6 +405,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     }
 
     private void updateOffsetY(float offsetY) {
+        if (isFlinging && !isFlingEnable) {
+            return;
+        }
         mOffsetY += offsetY;
         int pathLength = mKeyframes.getPathLength();
         int itemLength = getItemLength();
@@ -437,6 +443,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     }
 
     private void updateOffsetX(float offsetX) {
+        if (isFlinging && !isFlingEnable) {
+            return;
+        }
         mOffsetX += offsetX;
         int pathLength = mKeyframes.getPathLength();
         int itemLength = getItemLength();
@@ -572,11 +581,18 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
 
     @Override
     public void onScrollStateChanged(int state) {
-        if (state == RecyclerView.SCROLL_STATE_DRAGGING) {
-            stopFixingAnimation();
-        }
-        if (isAutoSelect && state == RecyclerView.SCROLL_STATE_IDLE) {
-            smoothScrollToPosition(findClosestPosition());
+        isFlinging = state == RecyclerView.SCROLL_STATE_SETTLING;
+        switch (state) {
+            case RecyclerView.SCROLL_STATE_DRAGGING:
+                stopFixingAnimation();
+                break;
+            case RecyclerView.SCROLL_STATE_IDLE:
+                if (isAutoSelect) {
+                    smoothScrollToPosition(findClosestPosition());
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -769,6 +785,10 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
 
     public void setFixingAnimationDuration(long duration) {
         mFixingAnimationDuration = duration;
+    }
+
+    public void setFlingEnable(boolean enable) {
+        isFlingEnable = enable;
     }
 
     private void checkKeyframes() {

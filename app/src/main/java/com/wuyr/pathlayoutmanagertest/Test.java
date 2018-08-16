@@ -15,14 +15,13 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         //(y-y2)/(y1-y2) = (x-x2)/(x1-x2)
-
-        float[] scales = new float[]{1F, 0F, .5F, .5F, 1F, 1F};
-        for (float i = 0F; i < 1F; i += .01F) {
-//            getScale(i, scales);
-            System.out.print(i + "---->" + getScale(i, scales) + ",\n\n");
-//            getScale2(i, scales);
-//            System.out.print(new DecimalFormat("0.00").format(i));
-        }
+//        float[] scales = new float[]{1F, 0F, .5F, .5F, 1F, 1F};
+//        for (float i = 0F; i < 1F; i += .01F) {
+////            getScale(i, scales);
+//            System.out.print(i + "---->" + getScale(i, scales) + ",\n\n");
+////            getScale2(i, scales);
+////            System.out.print(new DecimalFormat("0.00").format(i));
+//        }
     }
 
 

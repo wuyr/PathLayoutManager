@@ -171,6 +171,40 @@
         app:layout_constraintTop_toBottomOf="@+id/direction_fixed" />
 
     <TextView
+        android:id="@+id/disable_fling_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="disable fling"
+        app:layout_constraintTop_toBottomOf="@+id/auto_select" />
+
+    <Switch
+        android:id="@+id/disable_fling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/item_offset"
+        android:padding="4dp"
+        app:layout_constraintStart_toEndOf="@id/disable_fling_text"
+        app:layout_constraintTop_toBottomOf="@+id/auto_select" />
+
+    <TextView
+        android:id="@+id/show_path_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="show path"
+        app:layout_constraintTop_toBottomOf="@+id/disable_fling" />
+
+    <Switch
+        android:id="@+id/show_path"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/item_offset"
+        android:padding="4dp"
+        app:layout_constraintStart_toEndOf="@id/show_path_text"
+        app:layout_constraintTop_toBottomOf="@+id/disable_fling" />
+
+    <TextView
         android:id="@+id/item_offset_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -178,7 +212,7 @@
         android:text="item offset"
         app:layout_constraintEnd_toStartOf="@id/item_offset"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/auto_select" />
+        app:layout_constraintTop_toBottomOf="@+id/show_path" />
 
     <SeekBar
         android:id="@+id/item_offset"
@@ -191,7 +225,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/item_offset_text"
-        app:layout_constraintTop_toBottomOf="@+id/auto_select" />
+        app:layout_constraintTop_toBottomOf="@+id/show_path" />
 
     <TextView
         android:id="@+id/auto_select_fraction_text"
