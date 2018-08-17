@@ -20,7 +20,7 @@ import java.util.Random;
 /**
  * Created by wuyr on 18-5-20 上午4:09.
  */
-public class PathAdapter extends BaseAdapter<String, PathAdapter.ViewHolder> {
+public class PathAdapter extends BaseAdapter<Object, PathAdapter.ViewHolder> {
 
     public static final int TYPE_CARD = 0, TYPE_J20 = 1, TYPE_DRAGON = 2;
     private Toast mToast;
@@ -28,7 +28,7 @@ public class PathAdapter extends BaseAdapter<String, PathAdapter.ViewHolder> {
     private Random mRandom = new Random();
     private List<SoftReference<Bitmap>> mBitmapList;
 
-    public PathAdapter(Context context, List<String> data) {
+    public PathAdapter(Context context, List<Object> data) {
         super(context, data, R.layout.adapter_item_view, ViewHolder.class);
         mToast = Toast.makeText(context, "", Toast.LENGTH_SHORT);
         initBitmaps();
@@ -93,7 +93,6 @@ public class PathAdapter extends BaseAdapter<String, PathAdapter.ViewHolder> {
     private SoftReference<Bitmap> getBitmapById(int id) {
         return new SoftReference<>(decodeSampledBitmapFromResource(mContext.getResources(), id));
     }
-
 
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -162,11 +161,13 @@ public class PathAdapter extends BaseAdapter<String, PathAdapter.ViewHolder> {
 
         holder.imageView2.getLayoutParams().width = 135;
         holder.imageView2.requestLayout();
-        if (position == 0) {
+        if (position == 10) {
             holder.imageView2.setImageBitmap(getBitmap(7));
+        } else if (position < 10) {
+            holder.imageView2.setImageBitmap(null);
         } else if (position == mData.size() - 1) {
             holder.imageView2.setImageBitmap(getBitmap(4));
-        } else {
+        } else if (position < mData.size() - 1) {
             holder.imageView2.setImageBitmap(getBitmap(mRandom.nextBoolean() ? 5 : 6));
         }
     }
@@ -181,9 +182,36 @@ public class PathAdapter extends BaseAdapter<String, PathAdapter.ViewHolder> {
     }
 
     public void setType(int type) {
-        mCurrentType = type;
-        notifyItemRangeChanged(0, getItemCount());
+        if (mCurrentType != type) {
+            if (type == TYPE_DRAGON) {
+                List<Object> tempList = new ArrayList<>();
+                for (int i = 0; i < 10; i++) {
+                    tempList.add(null);
+                }
+                mData.addAll(tempList);
+            } else {
+                if (mCurrentType == TYPE_DRAGON) {
+                    for (int i = 0; i < 10; i++) {
+                        int index = mData.size() - 1;
+                        if (index >= 0) {
+                            mData.remove(index);
+                        }
+                    }
+                }
+            }
+            mCurrentType = type;
+            notifyItemRangeChanged(0, getItemCount());
+        }
     }
+
+    @Override
+    public void addData(@NonNull List<Object> data) {
+        super.addData(data);
+        if (mCurrentType == TYPE_DRAGON && mData.size() < 20) {
+            super.addData(data);
+        }
+    }
+
     private int calculateInSampleSize(BitmapFactory.Options options) {
         int reqWidth = 0;
         int reqHeight = 0;
@@ -203,29 +231,22 @@ public class PathAdapter extends BaseAdapter<String, PathAdapter.ViewHolder> {
             default:
                 break;
         }
-        // 源图片的高度和宽度
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
         if (height > reqHeight || width > reqWidth) {
-            // 计算出实际宽高和目标宽高的比率
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
-            // 选择宽和高中最小的比率作为inSampleSize的值，这样可以保证最终图片的宽和高
-            // 一定都会大于等于目标的宽和高。
             inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
         }
         return inSampleSize;
     }
 
     private Bitmap decodeSampledBitmapFromResource(Resources res, int resId) {
-        // 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(res, resId, options);
-        // 调用上面定义的方法计算inSampleSize值
         options.inSampleSize = calculateInSampleSize(options);
-        // 使用获取到的inSampleSize值再次解析图片
         options.inJustDecodeBounds = false;
         try {
             return BitmapFactory.decodeResource(res, resId, options);

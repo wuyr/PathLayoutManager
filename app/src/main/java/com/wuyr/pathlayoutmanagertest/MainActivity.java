@@ -84,17 +84,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 if (path != null && !path.isEmpty()) {
                     mCanvasView.setVisibility(View.INVISIBLE);
                     mTrackView.setPath(mCanvasView.getPath());
-                    if (isShowPath) {
-                        mTrackView.setVisibility(View.VISIBLE);
-                    }
-
+                    mTrackView.setVisibility(isShowPath ? View.VISIBLE : View.INVISIBLE);
                     mPathLayoutManager.updatePath(mCanvasView.getPath());
                 }
                 break;
             case R.id.add:
-                List<String> data = new ArrayList<>();
-                for (int i = mAdapter.getItemCount(); i < mAdapter.getItemCount() + 10; i++) {
-                    data.add("" + i);
+                List<Object> data = new ArrayList<>();
+                for (int i = 0; i < 10; i++) {
+                    data.add(null);
                 }
                 mAdapter.addData(data);
                 break;
@@ -159,11 +156,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 }
                 break;
             case R.id.cache_count:
-                try{
-                    int count = Integer.parseInt(((TextView)findViewById(R.id.cache_count_text)).getText().toString());
+                try {
+                    int count = Integer.parseInt(((TextView) findViewById(R.id.cache_count_text)).getText().toString());
                     mPathLayoutManager.setCacheCount(count);
                     mToast.setText(R.string.success);
-                }catch (Exception e){
+                } catch (Exception e) {
                     mToast.setText(e.toString());
                 }
                 mToast.show();
