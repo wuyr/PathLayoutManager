@@ -383,6 +383,8 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
 
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        mRecycler = recycler;
+        mState = state;
         checkKeyframes();
         detachAndScrapAttachedViews(recycler);
         //临时记录上一次的offset
@@ -395,6 +397,8 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
 
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        mRecycler = recycler;
+        mState = state;
         checkKeyframes();
         detachAndScrapAttachedViews(recycler);
         float lastOffset = mOffsetY;

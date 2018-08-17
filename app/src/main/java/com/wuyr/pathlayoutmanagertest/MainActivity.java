@@ -63,9 +63,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         ((Switch) findViewById(R.id.orientation)).setOnCheckedChangeListener(this);
         ((Switch) findViewById(R.id.direction_fixed)).setOnCheckedChangeListener(this);
         ((Switch) findViewById(R.id.auto_select)).setOnCheckedChangeListener(this);
+        ((Switch) findViewById(R.id.disable_fling)).setOnCheckedChangeListener(this);
+        ((Switch) findViewById(R.id.show_path)).setOnCheckedChangeListener(this);
 
         ((SeekBar) findViewById(R.id.item_offset)).setOnSeekBarChangeListener(this);
         ((SeekBar) findViewById(R.id.auto_select_fraction)).setOnSeekBarChangeListener(this);
+        ((SeekBar) findViewById(R.id.fixing_animation_duration)).setOnSeekBarChangeListener(this);
     }
 
     public void handleOnClick(View view) {
@@ -100,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     mAdapter.removeData(mAdapter.getItemCount() - 1);
                 }
                 break;
-
             case R.id.card:
                 view.setEnabled(false);
                 findViewById(R.id.j20).setEnabled(true);
@@ -119,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 findViewById(R.id.j20).setEnabled(true);
                 mAdapter.setType(PathAdapter.TYPE_DRAGON);
                 break;
-
             case R.id.normal:
                 view.setEnabled(false);
                 findViewById(R.id.overflow).setEnabled(true);
@@ -138,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 findViewById(R.id.normal).setEnabled(true);
                 mPathLayoutManager.setScrollMode(PathLayoutManager.SCROLL_MODE_LOOP);
                 break;
-
             case R.id.apply_scale_ratio:
                 String content = ((TextView) findViewById(R.id.scale_ratio_text)).getText().toString();
                 if (TextUtils.isEmpty(content)) {
@@ -151,11 +151,22 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             ratios[i] = Float.parseFloat(ratiosString[i]);
                         }
                         mPathLayoutManager.setItemScaleRatio(ratios);
+                        mToast.setText(R.string.success);
                     } catch (Exception e) {
                         mToast.setText(e.toString());
-                        mToast.show();
                     }
+                    mToast.show();
                 }
+                break;
+            case R.id.cache_count:
+                try{
+                    int count = Integer.parseInt(((TextView)findViewById(R.id.cache_count_text)).getText().toString());
+                    mPathLayoutManager.setCacheCount(count);
+                    mToast.setText(R.string.success);
+                }catch (Exception e){
+                    mToast.setText(e.toString());
+                }
+                mToast.show();
                 break;
             default:
                 break;
@@ -194,7 +205,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        mToast.cancel();
         switch (seekBar.getId()) {
             case R.id.item_offset:
                 mPathLayoutManager.setItemOffset(progress);
@@ -204,6 +214,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 float fraction = progress / 100F;
                 mPathLayoutManager.setAutoSelectFraction(fraction);
                 mToast.setText(String.valueOf(fraction));
+                break;
+            case R.id.fixing_animation_duration:
+                mPathLayoutManager.setFixingAnimationDuration(progress);
+                mToast.setText(String.valueOf(progress));
                 break;
             default:
                 break;

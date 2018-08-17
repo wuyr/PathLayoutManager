@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">PathLayoutManagerTest</string>
+    <string name="success">成功</string>
+    <string name="start_draw">画</string>
+    <string name="stop_draw">画完</string>
+    <string name="add">添加</string>
+    <string name="remove">移除</string>
+    <string name="item_type">item类型</string>
+    <string name="card">卡片</string>
+    <string name="j20">歼20</string>
+    <string name="dragon">龙</string>
+    <string name="scroll_mode">滚动模式</string>
+    <string name="normal">普通模式</string>
+    <string name="overflow">溢出模式</string>
+    <string name="loop">无限循环模式</string>
+    <string name="vertical_scroll">垂直滑动</string>
+    <string name="horizontal_scroll">水平滑动</string>
+    <string name="direction_fixed">保持垂直</string>
+    <string name="auto_select">自动选中</string>
+    <string name="disable_fling">关闭惯性滚动</string>
+    <string name="show_path">显示路径</string>
+    <string name="item_offset">item间距</string>
+    <string name="auto_select_fraction">自动选中的落点</string>
+    <string name="fixing_animation_duration">自动选中的动画时长</string>
+    <string name="cache_count_default_10">item缓存个数 (默认: 10个)(谨慎修改)</string>
+    <string name="apply">确定</string>
+    <string name="scale_ratios_hint">平滑缩放(如:0.2,0.5(在路径50%处把item缩放到20%))</string>
+    <string name="apply_scale_ratios">更新平滑缩放</string>
 </resources>

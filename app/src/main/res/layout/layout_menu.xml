@@ -1,272 +1,324 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="start"
-    android:background="@android:color/white"
-    android:clickable="true"
-    android:focusable="true"
-    android:padding="4dp">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
-    <Button
-        android:id="@+id/start_draw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="handleOnClick"
-        android:text="start draw" />
-
-    <Button
-        android:id="@+id/end_draw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="handleOnClick"
-        android:text="stop draw"
-        app:layout_constraintStart_toEndOf="@id/start_draw" />
-
-    <Button
-        android:id="@+id/add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="handleOnClick"
-        android:text="add"
-        app:layout_constraintTop_toBottomOf="@+id/start_draw" />
-
-    <Button
-        android:id="@+id/remove"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="handleOnClick"
-        android:text="remove"
-        app:layout_constraintStart_toEndOf="@id/add"
-        app:layout_constraintTop_toBottomOf="@+id/start_draw" />
-
-    <TextView
-        android:id="@+id/item_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="item type"
-        app:layout_constraintTop_toBottomOf="@+id/add" />
-
-    <Button
-        android:id="@+id/card"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="handleOnClick"
-        android:text="card"
-        app:layout_constraintTop_toBottomOf="@+id/item_type" />
-
-    <Button
-        android:id="@+id/j20"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/item_offset"
-        android:onClick="handleOnClick"
-        android:text="j20"
-        app:layout_constraintStart_toEndOf="@id/card"
-        app:layout_constraintTop_toBottomOf="@+id/item_type" />
-
-    <Button
-        android:id="@+id/dragon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="handleOnClick"
-        android:text="dragon"
-        app:layout_constraintStart_toEndOf="@id/j20"
-        app:layout_constraintTop_toBottomOf="@+id/item_type" />
-
-    <TextView
-        android:id="@+id/scroll_mode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="scroll mode"
-        app:layout_constraintTop_toBottomOf="@+id/card" />
-
-    <Button
-        android:id="@+id/normal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="handleOnClick"
-        android:text="normal"
-        app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
-
-    <Button
-        android:id="@+id/overflow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/item_offset"
-        android:onClick="handleOnClick"
-        android:text="overflow"
-        app:layout_constraintStart_toEndOf="@id/normal"
-        app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
-
-    <Button
-        android:id="@+id/loop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="handleOnClick"
-        android:text="loop"
-        app:layout_constraintStart_toEndOf="@id/overflow"
-        app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
-
-    <TextView
-        android:id="@+id/vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="vertical scroll"
-        app:layout_constraintTop_toBottomOf="@+id/normal" />
-
-    <Switch
-        android:id="@+id/orientation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/item_offset"
-        app:layout_constraintStart_toEndOf="@id/vertical"
-        app:layout_constraintTop_toBottomOf="@+id/normal" />
-
-    <TextView
-        android:id="@+id/horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="horizontal scroll"
-        app:layout_constraintStart_toEndOf="@id/orientation"
-        app:layout_constraintTop_toBottomOf="@+id/normal" />
-
-    <TextView
-        android:id="@+id/direction_fixed_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="direction fixed"
-        app:layout_constraintTop_toBottomOf="@+id/orientation" />
-
-    <Switch
-        android:id="@+id/direction_fixed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/item_offset"
-        android:padding="4dp"
-        app:layout_constraintStart_toEndOf="@id/direction_fixed_text"
-        app:layout_constraintTop_toBottomOf="@+id/orientation" />
-
-    <TextView
-        android:id="@+id/auto_select_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="auto select"
-        app:layout_constraintTop_toBottomOf="@+id/direction_fixed" />
-
-    <Switch
-        android:id="@+id/auto_select"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/item_offset"
-        android:padding="4dp"
-        app:layout_constraintStart_toEndOf="@id/auto_select_text"
-        app:layout_constraintTop_toBottomOf="@+id/direction_fixed" />
-
-    <TextView
-        android:id="@+id/disable_fling_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="disable fling"
-        app:layout_constraintTop_toBottomOf="@+id/auto_select" />
-
-    <Switch
-        android:id="@+id/disable_fling"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/item_offset"
-        android:padding="4dp"
-        app:layout_constraintStart_toEndOf="@id/disable_fling_text"
-        app:layout_constraintTop_toBottomOf="@+id/auto_select" />
-
-    <TextView
-        android:id="@+id/show_path_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="show path"
-        app:layout_constraintTop_toBottomOf="@+id/disable_fling" />
-
-    <Switch
-        android:id="@+id/show_path"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/item_offset"
-        android:padding="4dp"
-        app:layout_constraintStart_toEndOf="@id/show_path_text"
-        app:layout_constraintTop_toBottomOf="@+id/disable_fling" />
-
-    <TextView
-        android:id="@+id/item_offset_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="item offset"
-        app:layout_constraintEnd_toStartOf="@id/item_offset"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/show_path" />
-
-    <SeekBar
-        android:id="@+id/item_offset"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:max="1080"
-        android:padding="4dp"
-        android:progress="50"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/item_offset_text"
-        app:layout_constraintTop_toBottomOf="@+id/show_path" />
-
-    <TextView
-        android:id="@+id/auto_select_fraction_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="auto select fraction"
-        app:layout_constraintEnd_toStartOf="@id/auto_select_fraction"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_offset" />
-
-    <SeekBar
-        android:id="@+id/auto_select_fraction"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:max="100"
-        android:padding="4dp"
-        android:progress="50"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/auto_select_fraction_text"
-        app:layout_constraintTop_toBottomOf="@+id/item_offset" />
-
-    <EditText
-        android:id="@+id/scale_ratio_text"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:hint="scale ratios (example: 0,0.5)"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:textSize="15sp"
-        app:layout_constraintTop_toBottomOf="@+id/auto_select_fraction" />
+        android:layout_gravity="start"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="4dp">
 
-    <Button
-        android:id="@+id/apply_scale_ratio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="handleOnClick"
-        android:text="apply scale ratios"
-        app:layout_constraintTop_toBottomOf="@+id/scale_ratio_text" />
+        <Button
+            android:id="@+id/start_draw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="@string/start_draw" />
 
-</android.support.constraint.ConstraintLayout>
+        <Button
+            android:id="@+id/end_draw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="@string/stop_draw"
+            app:layout_constraintStart_toEndOf="@id/start_draw" />
+
+        <Button
+            android:id="@+id/add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="@string/add"
+            app:layout_constraintTop_toBottomOf="@+id/start_draw" />
+
+        <Button
+            android:id="@+id/remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="@string/remove"
+            app:layout_constraintStart_toEndOf="@id/add"
+            app:layout_constraintTop_toBottomOf="@+id/start_draw" />
+
+        <TextView
+            android:id="@+id/item_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/item_type"
+            app:layout_constraintTop_toBottomOf="@+id/add" />
+
+        <Button
+            android:id="@+id/card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="@string/card"
+            app:layout_constraintTop_toBottomOf="@+id/item_type" />
+
+        <Button
+            android:id="@+id/j20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/item_offset"
+            android:onClick="handleOnClick"
+            android:text="@string/j20"
+            app:layout_constraintStart_toEndOf="@id/card"
+            app:layout_constraintTop_toBottomOf="@+id/item_type" />
+
+        <Button
+            android:id="@+id/dragon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="@string/dragon"
+            app:layout_constraintStart_toEndOf="@id/j20"
+            app:layout_constraintTop_toBottomOf="@+id/item_type" />
+
+        <TextView
+            android:id="@+id/scroll_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/scroll_mode"
+            app:layout_constraintTop_toBottomOf="@+id/card" />
+
+        <Button
+            android:id="@+id/normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="@string/normal"
+            app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
+
+        <Button
+            android:id="@+id/overflow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/item_offset"
+            android:onClick="handleOnClick"
+            android:text="@string/overflow"
+            app:layout_constraintStart_toEndOf="@id/normal"
+            app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
+
+        <Button
+            android:id="@+id/loop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="@string/loop"
+            app:layout_constraintStart_toEndOf="@id/overflow"
+            app:layout_constraintTop_toBottomOf="@+id/scroll_mode" />
+
+        <TextView
+            android:id="@+id/vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/vertical_scroll"
+            app:layout_constraintTop_toBottomOf="@+id/normal" />
+
+        <Switch
+            android:id="@+id/orientation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/item_offset"
+            app:layout_constraintStart_toEndOf="@id/vertical"
+            app:layout_constraintTop_toBottomOf="@+id/normal" />
+
+        <TextView
+            android:id="@+id/horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/horizontal_scroll"
+            app:layout_constraintStart_toEndOf="@id/orientation"
+            app:layout_constraintTop_toBottomOf="@+id/normal" />
+
+        <TextView
+            android:id="@+id/direction_fixed_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/direction_fixed"
+            app:layout_constraintTop_toBottomOf="@+id/orientation" />
+
+        <Switch
+            android:id="@+id/direction_fixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/item_offset"
+            android:padding="4dp"
+            app:layout_constraintStart_toEndOf="@id/direction_fixed_text"
+            app:layout_constraintTop_toBottomOf="@+id/orientation" />
+
+        <TextView
+            android:id="@+id/auto_select_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/auto_select"
+            app:layout_constraintTop_toBottomOf="@+id/direction_fixed" />
+
+        <Switch
+            android:id="@+id/auto_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/item_offset"
+            android:padding="4dp"
+            app:layout_constraintStart_toEndOf="@id/auto_select_text"
+            app:layout_constraintTop_toBottomOf="@+id/direction_fixed" />
+
+        <TextView
+            android:id="@+id/disable_fling_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/disable_fling"
+            app:layout_constraintTop_toBottomOf="@+id/auto_select" />
+
+        <Switch
+            android:id="@+id/disable_fling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/item_offset"
+            android:padding="4dp"
+            app:layout_constraintStart_toEndOf="@id/disable_fling_text"
+            app:layout_constraintTop_toBottomOf="@+id/auto_select" />
+
+        <TextView
+            android:id="@+id/show_path_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/show_path"
+            app:layout_constraintTop_toBottomOf="@+id/disable_fling" />
+
+        <Switch
+            android:id="@+id/show_path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/item_offset"
+            android:padding="4dp"
+            app:layout_constraintStart_toEndOf="@id/show_path_text"
+            app:layout_constraintTop_toBottomOf="@+id/disable_fling" />
+
+        <TextView
+            android:id="@+id/item_offset_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/item_offset"
+            app:layout_constraintEnd_toStartOf="@id/item_offset"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/show_path" />
+
+        <SeekBar
+            android:id="@+id/item_offset"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:max="1080"
+            android:padding="4dp"
+            android:progress="50"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/item_offset_text"
+            app:layout_constraintTop_toBottomOf="@+id/show_path" />
+
+        <TextView
+            android:id="@+id/auto_select_fraction_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/auto_select_fraction"
+            app:layout_constraintEnd_toStartOf="@id/auto_select_fraction"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_offset" />
+
+        <SeekBar
+            android:id="@+id/auto_select_fraction"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:max="100"
+            android:padding="4dp"
+            android:progress="50"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/auto_select_fraction_text"
+            app:layout_constraintTop_toBottomOf="@+id/item_offset" />
+
+        <TextView
+            android:id="@+id/fixing_animation_duration_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/fixing_animation_duration"
+            app:layout_constraintEnd_toStartOf="@id/fixing_animation_duration"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/auto_select_fraction" />
+
+        <SeekBar
+            android:id="@+id/fixing_animation_duration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:max="1000"
+            android:padding="4dp"
+            android:progress="250"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/fixing_animation_duration_text"
+            app:layout_constraintTop_toBottomOf="@+id/auto_select_fraction" />
+
+        <EditText
+            android:id="@+id/cache_count_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:hint="@string/cache_count_default_10"
+            android:inputType="phone"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toStartOf="@+id/cache_count"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fixing_animation_duration" />
+
+        <Button
+            android:id="@+id/cache_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="@string/apply"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cache_count_text"
+            app:layout_constraintTop_toBottomOf="@+id/fixing_animation_duration" />
+
+        <EditText
+            android:id="@+id/scale_ratio_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:hint="@string/scale_ratios_hint"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@+id/cache_count_text" />
+
+        <Button
+            android:id="@+id/apply_scale_ratio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="@string/apply_scale_ratios"
+            app:layout_constraintTop_toBottomOf="@+id/scale_ratio_text" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

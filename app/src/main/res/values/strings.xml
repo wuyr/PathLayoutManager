@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">PathLayoutManagerTest</string>
+    <string name="success">success</string>
+    <string name="start_draw">start draw</string>
+    <string name="stop_draw">stop draw</string>
+    <string name="add">add</string>
+    <string name="remove">remove</string>
+    <string name="item_type">item type</string>
+    <string name="card">card</string>
+    <string name="j20">j20</string>
+    <string name="dragon">dragon</string>
+    <string name="scroll_mode">scroll mode</string>
+    <string name="normal">normal</string>
+    <string name="overflow">overflow</string>
+    <string name="loop">loop</string>
+    <string name="vertical_scroll">vertical scroll</string>
+    <string name="horizontal_scroll">horizontal scroll</string>
+    <string name="direction_fixed">direction fixed</string>
+    <string name="auto_select">auto select</string>
+    <string name="disable_fling">disable fling</string>
+    <string name="show_path">show path</string>
+    <string name="item_offset">item offset</string>
+    <string name="auto_select_fraction">auto select fraction</string>
+    <string name="fixing_animation_duration">fixing animation duration</string>
+    <string name="cache_count_default_10">cache count (default: 10)</string>
+    <string name="apply">apply</string>
+    <string name="scale_ratios_hint">scale ratios (example: 0,0.5)</string>
+    <string name="apply_scale_ratios">apply scale ratios</string>
 </resources>
