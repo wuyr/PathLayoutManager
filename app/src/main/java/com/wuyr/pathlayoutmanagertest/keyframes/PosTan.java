@@ -1,39 +1,37 @@
 package com.wuyr.pathlayoutmanagertest.keyframes;
 
-import android.graphics.Point;
 import android.graphics.PointF;
 
 import java.util.Locale;
 
 /**
  * Created by wuyr on 18-5-22 下午10:26.
+ * GitHub: https://github.com/wuyr/PathLayoutManager
  */
 public class PosTan extends PointF {
 
+    /**
+     * 在路径上的位置 (百分比)
+     */
     public float fraction;
-    public float angle;
+
+    /**
+     * Item所对应的索引
+     */
     public int index;
 
-    public PosTan() {
+    /**
+     * Item的旋转角度
+     */
+    private float angle;
+
+    PosTan() {
     }
 
-    public PosTan(int index) {
-        this.index = index;
-    }
-
-    public PosTan(float angle) {
-        this.angle = angle;
-    }
-
-    public PosTan(int index, float x, float y, float angle) {
+    private PosTan(int index, float x, float y, float angle) {
         super(x, y);
         this.angle = angle;
         this.index = index;
-    }
-
-    public PosTan(Point p, float angle) {
-        super(p);
-        this.angle = angle;
     }
 
     public PosTan(PosTan p, int index, float fraction) {

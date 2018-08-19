@@ -1,5 +1,7 @@
 package com.wuyr.pathlayoutmanagertest;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -23,6 +25,7 @@ import java.util.List;
 
 /**
  * Created by wuyr on 18-5-21 下午11:38.
+ * GitHub: https://github.com/wuyr/PathLayoutManager
  */
 public class PathLayoutManager extends RecyclerView.LayoutManager implements RecyclerView.SmoothScroller.ScrollVectorProvider {
 
@@ -31,26 +34,37 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     private @interface ScrollMode {
     }
 
+    /**
+     * 普通模式
+     */
     public static final int SCROLL_MODE_NORMAL = 0;
+
+    /**
+     * 溢出模式
+     */
     public static final int SCROLL_MODE_OVERFLOW = 1;
+
+    /**
+     * 无限循环模式
+     */
     public static final int SCROLL_MODE_LOOP = 2;
 
-    private Keyframes mKeyframes;
-    private int mScrollMode;
-    private int mOrientation;
-    private int mItemOffset;
-    private int mItemCountInScreen;
-    private int mFirstVisibleItemPos;
-    private float mOffsetX, mOffsetY;
-    private boolean isItemDirectionFixed;
-    private boolean isAutoSelect;
-    private float[] mScaleRatio;
-    private float mAutoSelectFraction;
-    private long mFixingAnimationDuration;
+    private Keyframes mKeyframes; //关键帧
+    private int mScrollMode; //滚动模式
+    private int mOrientation; //滑动方向
+    private int mItemOffset; //Item间距
+    private int mItemCountInScreen; //屏幕中最多能同时显示的Item个数
+    private int mFirstVisibleItemPos; //第一个可见的Item索引
+    private float mOffsetX, mOffsetY; //x轴偏移量和y轴偏移量
+    private boolean isItemDirectionFixed; //Item是否保持垂直
+    private boolean isAutoSelect; //是否自动选中
+    private float mAutoSelectFraction; //自动选中的落点 (0~1)
+    private float[] mScaleRatio; //缩放比例
+    private long mFixingAnimationDuration; //自动选中的动画时长
     private boolean isAnimatorInitialized;
-    private int mCacheCount;
-    private boolean isFlingEnable;
-    private boolean isFlinging;
+    private int mCacheCount; //缓存的Item个数
+    private boolean isFlingEnable; //是否开启惯性滚动
+    private boolean isFlinging; //正在惯性滚动中
 
     //RecyclerView default ItemAnimator has bug on PathLayoutManager
     private RepairedItemAnimator mItemAnimator;
@@ -58,10 +72,21 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
     private RecyclerView.State mState;
     private ValueAnimator mAnimator;
 
+    private OnItemSelectedListener mItemSelectedListener;
+
+    /**
+     * @param path       目标路径
+     * @param itemOffset Item间距
+     */
     public PathLayoutManager(Path path, int itemOffset) {
         this(path, itemOffset, RecyclerView.VERTICAL);
     }
 
+    /**
+     * @param path        目标路径
+     * @param itemOffset  Item间距
+     * @param orientation 滑动方向
+     */
     public PathLayoutManager(Path path, int itemOffset, @RecyclerView.Orientation int orientation) {
         mCacheCount = 10;
         mAutoSelectFraction = .5F;
@@ -72,7 +97,6 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         updatePath(path);
         mItemAnimator = new RepairedItemAnimator();
         mItemAnimator.setOnErrorListener(holder -> {
-            LogUtil.print("error!!!");
             if (mRecycler != null && mState != null) {
                 removeAndRecycleAllViews(mRecycler);
                 for (int i = 0; i < mState.getItemCount(); i++) {
@@ -103,6 +127,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         relayoutChildren(recycler, state);
     }
 
+    /**
+     * 通过反射替换默认的Item动画 (解决在某些机型上的crash问题)
+     */
     private void initItemAnimator() {
         try {
             Field field = RecyclerView.LayoutManager.class.getDeclaredField("mRecyclerView");
@@ -122,6 +149,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 检查状态并进行布局和回收旧Item
+     */
     private void relayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         List<PosTan> needLayoutItems = getNeedLayoutItems();
         if (needLayoutItems.isEmpty() || state.getItemCount() == 0 || mKeyframes == null) {
@@ -132,6 +162,11 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         recycleChildren(recycler, state, needLayoutItems);
     }
 
+    /**
+     * 确定Item位置，角度以及尺寸
+     *
+     * @param needLayoutItems 需要布局的Item
+     */
     private void onLayout(RecyclerView.Recycler recycler, List<PosTan> needLayoutItems) {
         int x, y;
         View item;
@@ -154,6 +189,12 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 根据Item在Path上的位置来获取对应的缩放比例
+     *
+     * @param fraction Item位置相对于Path总长度的百分比
+     * @return 该Item的缩放比例
+     */
     private float getScale(float fraction) {
         boolean isHasMin = false;
         boolean isHasMax = false;
@@ -196,12 +237,26 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         return isFinite(result) ? result : minScale;
     }
 
+    /**
+     * 将基于总长度的百分比转换成基于某个片段的百分比 (解两点式直线方程)
+     *
+     * @param startX   片段起始百分比
+     * @param endX     片段结束百分比
+     * @param currentX 总长度百分比
+     * @return 该片段的百分比
+     */
     private float solveTwoPointForm(float startX, float endX, float currentX) {
         return (currentX - startX) / (endX - startX);
     }
 
-    private boolean isFinite(float f) {
-        return !Float.isNaN(f) && !Float.isInfinite(f);
+    /**
+     * 判断数值是否合法
+     *
+     * @param value 要判断的数值
+     * @return 合法为true，反之
+     */
+    private boolean isFinite(float value) {
+        return !Float.isNaN(value) && !Float.isInfinite(value);
     }
 
     private List<PosTan> getNeedLayoutItems() {
@@ -218,6 +273,12 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         return result;
     }
 
+    /**
+     * 初始化需要布局的Item数据 （无限滚动模式）
+     *
+     * @param result    结果
+     * @param itemCount Item总数
+     */
     private void initNeedLayoutLoopScrollItems(List<PosTan> result, int itemCount) {
         int overflowCount = getOverflowCount();
         //得出第一个可见的item
@@ -247,6 +308,13 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+
+    /**
+     * 初始化需要布局的Item数据 （非无限滚动模式）
+     *
+     * @param result    结果
+     * @param itemCount Item总数
+     */
     private void initNeedLayoutItems(List<PosTan> result, int itemCount) {
         float currentDistance;
         for (int i = 0; i < itemCount; i++) {
@@ -274,6 +342,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 获取溢出的Item个数
+     */
     private int getOverflowCount() {
         //item总长度
         int itemLength = getItemLength();
@@ -309,6 +380,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         return vacantDistance / mItemOffset;
     }
 
+    /**
+     * 回收屏幕外需回收的Item
+     */
     private void recycleChildren(RecyclerView.Recycler recycler, RecyclerView.State state, List<PosTan> needLayoutDataList) {
         int itemCount = getItemCount();
         int firstIndex = needLayoutDataList.get(0).index;
@@ -360,6 +434,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 回收屏幕外需回收的Item
+     */
     private void recycleChildren(RecyclerView.Recycler recycler, RecyclerView.State state, int startIndex, int endIndex) {
         int temp;
         for (int i = startIndex; i <= endIndex; i++) {
@@ -374,6 +451,12 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 把小于0或者大于getItemCount()的索引转换成合法的索引
+     * 比如: getItemCount() = 10
+     * 如果此时index传 11 那么就返回 1
+     * 如果index为 -1 则返回 10
+     */
     private int fixOverflowIndex(int index, int count) {
         while (index < 0) {
             index += count;
@@ -408,6 +491,11 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         return lastOffset == mOffsetY ? 0 : dy;
     }
 
+    /**
+     * 更新Y轴偏移量
+     *
+     * @param offsetY 偏移量
+     */
     private void updateOffsetY(float offsetY) {
         if (isFlinging && !isFlingEnable) {
             return;
@@ -446,6 +534,11 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 更新X轴偏移量
+     *
+     * @param offsetX 偏移量
+     */
     private void updateOffsetX(float offsetX) {
         if (isFlinging && !isFlingEnable) {
             return;
@@ -484,6 +577,10 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 判断是否满足无限循环滚动条件
+     * 条件： 必须明确开始无限循环模式，并且Item的总长度要大声Path的总长度
+     */
     private boolean isSatisfiedLoopScroll() {
         checkKeyframes();
         int pathLength = mKeyframes.getPathLength();
@@ -491,24 +588,41 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         return isLoopScrollMode() && itemLength - pathLength > mItemOffset;
     }
 
+
+    /**
+     * 判断是否满足无限循环滚动条件
+     * 条件： 必须明确设置滚动模式为 无限循环模式，并且Item的总长度要大声Path的总长度
+     */
     private boolean isSatisfiedLoopScroll(int pathLength, int itemLength) {
         return isLoopScrollMode() && itemLength - pathLength > mItemOffset;
     }
 
+    /**
+     * @return 滚动模式是否为 无限循环滚动模式
+     */
     private boolean isLoopScrollMode() {
         return mScrollMode == SCROLL_MODE_LOOP;
     }
 
+    /**
+     * @return 滚动模式是否为 溢出模式
+     */
     private boolean isOverflowMode() {
         return mScrollMode == SCROLL_MODE_OVERFLOW;
     }
 
+    /**
+     * @return Item总长度
+     */
     private int getItemLength() {
         //这里 +1 是为了让最后一个item 显示出来 (让最后一个item的距离相对于Path长度的百分比<1，
         // 即使其满足mKeyframes.getValue()方法里面获取有效坐标点的条件)
         return getItemCount() * mItemOffset - mItemOffset + 1;
     }
 
+    /**
+     * 根据当前设置的滚动方向来获取对应的滚动偏移量
+     */
     private float getScrollOffset() {
         return mOrientation == RecyclerView.VERTICAL ? mOffsetY : mOffsetX;
     }
@@ -523,6 +637,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         return mOrientation == RecyclerView.HORIZONTAL;
     }
 
+    /**
+     * 更新Path
+     */
     public void updatePath(Path path) {
         if (path != null) {
             mKeyframes = new Keyframes(path);
@@ -540,6 +657,11 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         requestLayout();
     }
 
+    /**
+     * 设置Item间距
+     *
+     * @param itemOffset Item间距
+     */
     public void setItemOffset(int itemOffset) {
         if (mItemOffset != itemOffset && itemOffset > 0) {
             mItemOffset = itemOffset;
@@ -551,6 +673,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 设置Item是否保持垂直
+     */
     public void setItemDirectionFixed(boolean isFixed) {
         if (isItemDirectionFixed != isFixed) {
             isItemDirectionFixed = isFixed;
@@ -558,6 +683,13 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 设置滚动模式
+     *
+     * @param mode {@link #SCROLL_MODE_NORMAL}
+     *             {@link #SCROLL_MODE_OVERFLOW}
+     *             {@link #SCROLL_MODE_LOOP}
+     */
     public void setScrollMode(@ScrollMode int mode) {
         if (mode != mScrollMode) {
             mScrollMode = mode;
@@ -565,6 +697,11 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 设置滑动方向
+     * @param orientation {@see RecyclerView.HORIZONTAL}
+     *                    {@see RecyclerView.VERTICAL}
+     */
     @SuppressWarnings("SuspiciousNameCombination")
     public void setOrientation(@RecyclerView.Orientation int orientation) {
         if (mOrientation != orientation) {
@@ -579,6 +716,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 设置缓存个数
+     */
     public void setCacheCount(int count) {
         mCacheCount = count;
     }
@@ -600,6 +740,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 停止动画
+     */
     private void stopFixingAnimation() {
         if (mAnimator != null && mAnimator.isRunning()) {
             mAnimator.cancel();
@@ -621,6 +764,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 根据传入的position来获取离目标落点的最近距离
+     */
     private int getDistance(int position) {
         PosTan posTan = getVisiblePosTanByPosition(position);
         float distance;
@@ -668,16 +814,26 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         smoothScrollToPosition(position);
     }
 
+    /**
+     * 平滑滚动到某个位置
+     * @param position 目标Item索引
+     */
     public void smoothScrollToPosition(int position) {
         if (position > -1 && position < getItemCount()) {
             checkKeyframes();
-            startValueAnimator(getDistance(position));
+            startValueAnimator(position);
         }
     }
 
-    private void startValueAnimator(int distance) {
+    /**
+     * 播放平滑滚动动画并更新偏移量
+     * @param position 目标Item索引
+     */
+    private void startValueAnimator(int position) {
         //如果上一次的动画未播放完，就先取消它
         stopFixingAnimation();
+
+        int distance = getDistance(position);
 
         mAnimator = ValueAnimator.ofFloat(0, distance).setDuration(mFixingAnimationDuration);
         mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -699,9 +855,22 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
                 mLastScrollOffset = currentValue;
             }
         });
+        mAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (isAutoSelect) {
+                    if (mItemSelectedListener != null) {
+                        mItemSelectedListener.onSelected(position);
+                    }
+                }
+            }
+        });
         mAnimator.start();
     }
 
+    /**
+     * 找出离目标落点最近的Item索引
+     */
     private int findClosestPosition() {
         int hitPos = -1;
         List<PosTan> posTanList = getNeedLayoutItems();
@@ -725,6 +894,10 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         return hitPos;
     }
 
+    /**
+     * 设置自动选中的目标落点
+     * @param position 目标落点 (0~1)
+     */
     public void setAutoSelectFraction(@FloatRange(from = 0F, to = 1F) float position) {
         if (mAutoSelectFraction != position) {
             mAutoSelectFraction = position;
@@ -732,6 +905,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 设置是否开启自动选中效果
+     */
     public void setAutoSelect(boolean isAutoSelect) {
         if (this.isAutoSelect != isAutoSelect) {
             this.isAutoSelect = isAutoSelect;
@@ -741,6 +917,16 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 设置平滑缩放比例
+     * @param ratios 缩放比例， 数组长度必须是双数，
+     *               偶数索引表示要缩放的比例，
+     *               奇数索引表示在路径上的位置(0~1)
+     *               奇数索引必须要递增，即越往后的数值应越大
+     * 例如： setItemScaleRatio(0.8, 0.5) 即表示在路径的50%处把Item缩放到原来的80%
+     *       setItemScaleRatio(0, 0, 1, 0.5, 0, 1) 即表示在路径的起点和终点处，皆把Item缩放至原来的0%，
+     *               而在50%处把Item恢复原样
+     */
     public void setItemScaleRatio(float... ratios) {
         if (ratios.length == 0) {
             ratios = new float[]{1, 1};
@@ -775,6 +961,13 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         }
     }
 
+    /**
+     * 扩展数组元素
+     * @param isAddFromHead 是否从头部添加
+     * @param target 目标数组
+     * @param elements 需要插入的数值
+     * @return 扩展后的数组
+     */
     private float[] insertElement(boolean isAddFromHead, @NonNull float[] target, @NonNull float... elements) {
         float[] result = new float[target.length + elements.length];
         if (isAddFromHead) {
@@ -787,12 +980,26 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
         return result;
     }
 
+    /**
+     * 设置自动选中后的选中动画时长
+     * @param duration 动画时长
+     */
     public void setFixingAnimationDuration(long duration) {
         mFixingAnimationDuration = duration;
     }
 
+    /**
+     * 设置惯性滚动是否开启
+     */
     public void setFlingEnable(boolean enable) {
         isFlingEnable = enable;
+    }
+
+    /**
+     * 设置Item选中后的监听器
+     */
+    public void setOnItemSelectedListener(OnItemSelectedListener listener) {
+        mItemSelectedListener = listener;
     }
 
     private void checkKeyframes() {
@@ -863,5 +1070,9 @@ public class PathLayoutManager extends RecyclerView.LayoutManager implements Rec
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
         }
+    }
+
+    public interface OnItemSelectedListener {
+        void onSelected(int position);
     }
 }

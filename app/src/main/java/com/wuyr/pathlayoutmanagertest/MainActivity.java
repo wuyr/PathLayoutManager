@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by wuyr on 18-5-21 下午11:25.
@@ -69,6 +70,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         ((SeekBar) findViewById(R.id.item_offset)).setOnSeekBarChangeListener(this);
         ((SeekBar) findViewById(R.id.auto_select_fraction)).setOnSeekBarChangeListener(this);
         ((SeekBar) findViewById(R.id.fixing_animation_duration)).setOnSeekBarChangeListener(this);
+
+        mPathLayoutManager.setOnItemSelectedListener(position -> {
+            mToast.setText(String.format(Locale.getDefault(), "Item %d selected", position));
+            mToast.show();
+        });
     }
 
     public void handleOnClick(View view) {

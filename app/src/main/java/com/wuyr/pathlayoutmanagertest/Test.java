@@ -15,13 +15,13 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         //(y-y2)/(y1-y2) = (x-x2)/(x1-x2)
-//        float[] scales = new float[]{1F, 0F, .5F, .5F, 1F, 1F};
-//        for (float i = 0F; i < 1F; i += .01F) {
-////            getScale(i, scales);
+        float[] scales = new float[]{1F, 0F, .5F, .5F, 1F, 1F};
+        for (float i = 0F; i < 1F; i += .01F) {
+            getScale(i, scales);
 //            System.out.print(i + "---->" + getScale(i, scales) + ",\n\n");
-////            getScale2(i, scales);
-////            System.out.print(new DecimalFormat("0.00").format(i));
-//        }
+//            getScale2(i, scales);
+//            System.out.print(new DecimalFormat("0.00").format(i));
+        }
     }
 
 
@@ -60,9 +60,11 @@ public class Test {
         if (!isHasMax) {
             maxScale = 1;
         }
-        System.out.printf("\n\n%f, %f, %f, %f\n", minScale, minFraction, maxScale, maxFraction);
+//        System.out.printf("\n\n%f, %f, %f, %f\n", minScale, minFraction, maxScale, maxFraction);
+        System.out.println("before: " + fraction);
         fraction = solveTwoPointForm(minFraction, maxFraction, fraction);
-        System.out.println(fraction);
+        System.out.println("after: " + fraction);
+        System.out.println("\n\n");
         float distance = maxScale - minScale;
         float scale = distance * fraction;
         float result = minScale + scale;

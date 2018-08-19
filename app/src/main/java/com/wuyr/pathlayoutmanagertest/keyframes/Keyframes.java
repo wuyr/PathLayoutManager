@@ -6,10 +6,7 @@ import android.support.annotation.FloatRange;
 
 /**
  * Created by wuyr on 17-11-22 上午12:45.
- */
-
-/**
- * 关键帧,参考自SDK
+ * GitHub: https://github.com/wuyr/PathLayoutManager
  */
 public class Keyframes {
 
@@ -97,10 +94,6 @@ public class Keyframes {
     public PosTan getValue(int index) {
         mTemp.set(mX[index], mY[index], mAngle[index]);
         return mTemp;
-    }
-
-    public int getDataSize() {
-        return mX.length;
     }
 
     public int getPathLength() {
