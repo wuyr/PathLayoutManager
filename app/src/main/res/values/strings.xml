@@ -26,4 +26,5 @@
     <string name="apply">apply</string>
     <string name="scale_ratios_hint">scale ratios (example: 0,0.5)</string>
     <string name="apply_scale_ratios">apply scale ratios</string>
+    <string name="path_not_set">Path not set yet!</string>
 </resources>
