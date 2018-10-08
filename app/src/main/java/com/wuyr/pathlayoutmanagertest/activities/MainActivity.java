@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mTrackView = findViewById(R.id.track_panel);
         mCanvasView = findViewById(R.id.canvas_view);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(mPathLayoutManager = new PathLayoutManager(null, 50));
+        recyclerView.setLayoutManager(mPathLayoutManager = new PathLayoutManager(null, 150));
         recyclerView.setAdapter(mAdapter = new PathAdapter(this, null));
 
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
@@ -182,18 +182,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                         }
                         mToast.show();
                     }
-                }
-                break;
-            case R.id.cache_count:
-                if (checkIsPathInitialized()) {
-                    try {
-                        int count = Integer.parseInt(((TextView) findViewById(R.id.cache_count_text)).getText().toString());
-                        mPathLayoutManager.setCacheCount(count);
-                        mToast.setText(R.string.success);
-                    } catch (Exception e) {
-                        mToast.setText(e.toString());
-                    }
-                    mToast.show();
                 }
                 break;
             default:

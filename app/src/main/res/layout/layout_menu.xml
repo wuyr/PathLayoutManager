@@ -225,7 +225,7 @@
             android:layout_alignParentBottom="true"
             android:max="1080"
             android:padding="4dp"
-            android:progress="50"
+            android:progress="150"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@id/item_offset_text"
@@ -278,31 +278,6 @@
             app:layout_constraintTop_toBottomOf="@+id/auto_select_fraction" />
 
         <EditText
-            android:id="@+id/cache_count_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:hint="@string/cache_count_default_10"
-            android:inputType="phone"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@+id/cache_count"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fixing_animation_duration" />
-
-        <Button
-            android:id="@+id/cache_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="handleOnClick"
-            android:text="@string/apply"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cache_count_text"
-            app:layout_constraintTop_toBottomOf="@+id/fixing_animation_duration" />
-
-        <EditText
             android:id="@+id/scale_ratio_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -311,7 +286,7 @@
             android:maxLines="1"
             android:singleLine="true"
             android:textSize="15sp"
-            app:layout_constraintTop_toBottomOf="@+id/cache_count_text" />
+            app:layout_constraintTop_toBottomOf="@+id/fixing_animation_duration" />
 
         <Button
             android:id="@+id/apply_scale_ratio"

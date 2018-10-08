@@ -2,7 +2,7 @@
     <string name="app_name">PathLayoutManagerTest</string>
     <string name="success">success</string>
     <string name="start_draw">start draw</string>
-    <string name="stop_draw">stop draw</string>
+    <string name="stop_draw">end draw</string>
     <string name="add">add</string>
     <string name="remove">remove</string>
     <string name="item_type">item type</string>

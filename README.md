@@ -1,10 +1,10 @@
 ##  RecyclerView的LayoutManager，轻松实现各种炫酷、特殊效果，再也不怕产品经理为难！
-### 博客详情： in coming...
+### 博客详情： https://blog.csdn.net/u011387817/article/details/81875021
 
 ### 使用方式:
 #### 添加依赖：
 ```
-implementation 'com.wuyr:pathlayoutmanager:1.0.0'
+implementation 'com.wuyr:pathlayoutmanager:1.0.1'
 ```
 
 ### APIs:
