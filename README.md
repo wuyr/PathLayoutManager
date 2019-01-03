@@ -4,7 +4,7 @@
 ### 使用方式:
 #### 添加依赖：
 ```
-implementation 'com.wuyr:pathlayoutmanager:1.0.1'
+implementation 'com.wuyr:pathlayoutmanager:1.0.2'
 ```
 
 ### APIs:

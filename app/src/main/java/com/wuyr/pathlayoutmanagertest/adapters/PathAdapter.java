@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.wuyr.pathlayoutmanagertest.R;
 
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -28,7 +27,7 @@ public class PathAdapter extends BaseAdapter<Object, PathAdapter.ViewHolder> {
     private Toast mToast;
     private int mCurrentType;
     private Random mRandom = new Random();
-    private List<SoftReference<Bitmap>> mBitmapList;
+    private List<Bitmap> mBitmapList;
 
     public PathAdapter(Context context, List<Object> data) {
         super(context, data, R.layout.adapter_item_view, ViewHolder.class);
@@ -37,63 +36,20 @@ public class PathAdapter extends BaseAdapter<Object, PathAdapter.ViewHolder> {
     }
 
     private void initBitmaps() {
-        if (mBitmapList != null) {
-            for (int i = 0; i < mBitmapList.size(); i++) {
-                SoftReference<Bitmap> softReference = mBitmapList.get(i);
-                if (softReference.get() == null) {
-                    mBitmapList.remove(i);
-                    mBitmapList.add(i, getBitmapById(getIdByIndex(i)));
-                }
-            }
-        } else {
-            mBitmapList = new ArrayList<>();
-            mBitmapList.add(getBitmapById(R.drawable.ic_1));
-            mBitmapList.add(getBitmapById(R.drawable.ic_2));
-            mBitmapList.add(getBitmapById(R.drawable.ic_3));
-            mBitmapList.add(getBitmapById(R.drawable.ic_j20));
-            mBitmapList.add(getBitmapById(R.drawable.ic_dragon_head));
-            mBitmapList.add(getBitmapById(R.drawable.ic_dragon_body_1));
-            mBitmapList.add(getBitmapById(R.drawable.ic_dragon_body_2));
-            mBitmapList.add(getBitmapById(R.drawable.ic_dragon_tail));
-        }
-    }
-
-    private int getIdByIndex(int index) {
-        int id = -1;
-        switch (index) {
-            case 0:
-                id = R.drawable.ic_1;
-                break;
-            case 1:
-                id = R.drawable.ic_2;
-                break;
-            case 2:
-                id = R.drawable.ic_3;
-                break;
-            case 3:
-                id = R.drawable.ic_j20;
-                break;
-            case 4:
-                id = R.drawable.ic_dragon_head;
-                break;
-            case 5:
-                id = R.drawable.ic_dragon_body_1;
-                break;
-            case 6:
-                id = R.drawable.ic_dragon_body_2;
-                break;
-            case 7:
-                id = R.drawable.ic_dragon_tail;
-                break;
-            default:
-                break;
-        }
-        return id;
+        mBitmapList = new ArrayList<>();
+        mBitmapList.add(getBitmapById(R.drawable.ic_1));
+        mBitmapList.add(getBitmapById(R.drawable.ic_2));
+        mBitmapList.add(getBitmapById(R.drawable.ic_3));
+        mBitmapList.add(getBitmapById(R.drawable.ic_j20));
+        mBitmapList.add(getBitmapById(R.drawable.ic_dragon_head));
+        mBitmapList.add(getBitmapById(R.drawable.ic_dragon_body_1));
+        mBitmapList.add(getBitmapById(R.drawable.ic_dragon_body_2));
+        mBitmapList.add(getBitmapById(R.drawable.ic_dragon_tail));
     }
 
     @NonNull
-    private SoftReference<Bitmap> getBitmapById(int id) {
-        return new SoftReference<>(decodeSampledBitmapFromResource(mContext.getResources(), id));
+    private Bitmap getBitmapById(int id) {
+        return decodeSampledBitmapFromResource(mContext.getResources(), id);
     }
 
     @Override
@@ -103,15 +59,7 @@ public class PathAdapter extends BaseAdapter<Object, PathAdapter.ViewHolder> {
     }
 
     private void recyclerBitmaps() {
-        for (SoftReference<Bitmap> softReference : mBitmapList) {
-            Bitmap bitmap = softReference.get();
-            if (bitmap != null) {
-                bitmap.recycle();
-            }
-            softReference.clear();
-        }
         mBitmapList.clear();
-        mBitmapList = null;
     }
 
     @Override
@@ -175,10 +123,10 @@ public class PathAdapter extends BaseAdapter<Object, PathAdapter.ViewHolder> {
     }
 
     private Bitmap getBitmap(int index) {
-        Bitmap bitmap = mBitmapList.get(index).get();
+        Bitmap bitmap = mBitmapList.get(index);
         if (bitmap == null) {
             initBitmaps();
-            return mBitmapList.get(index).get();
+            return mBitmapList.get(index);
         }
         return bitmap;
     }
@@ -253,7 +201,7 @@ public class PathAdapter extends BaseAdapter<Object, PathAdapter.ViewHolder> {
         try {
             return BitmapFactory.decodeResource(res, resId, options);
         } catch (Exception e) {
-            return null;
+            return Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
         }
     }
 
