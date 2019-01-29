@@ -27,7 +27,7 @@ implementation 'com.wuyr:pathlayoutmanager:1.0.2'
 
 
 ### 使用示例：
-```
+```java
     mPathLayoutManager = new PathLayoutManager(path, itemOffset);
     mRecyclerView.setLayoutManager(mPathLayoutManager);
 ```
